@@ -923,6 +923,14 @@ slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmmirror.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
 
+sortablejs@1.14.0:
+  version "1.14.0"
+  resolved "https://registry.npmmirror.com/sortablejs/-/sortablejs-1.14.0.tgz#6d2e17ccbdb25f464734df621d4f35d4ab35b3d8"
+
+sortablejs@^1.15.0:
+  version "1.15.0"
+  resolved "https://registry.npmmirror.com/sortablejs/-/sortablejs-1.15.0.tgz#53230b8aa3502bb77a29e2005808ffdb4a5f7e2a"
+
 source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmmirror.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
@@ -1025,6 +1033,12 @@ vue@^3.2.37:
     "@vue/runtime-dom" "3.2.37"
     "@vue/server-renderer" "3.2.37"
     "@vue/shared" "3.2.37"
+
+vuedraggable@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmmirror.com/vuedraggable/-/vuedraggable-4.1.0.tgz#edece68adb8a4d9e06accff9dfc9040e66852270"
+  dependencies:
+    sortablejs "1.14.0"
 
 which@^2.0.1:
   version "2.0.2"

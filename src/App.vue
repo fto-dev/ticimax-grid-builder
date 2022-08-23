@@ -1,6 +1,7 @@
 <script setup>
 import UIkit from 'uikit';
 import { ref, reactive, watch, computed } from 'vue';
+import draggable from "vuedraggable"
 
 
 
@@ -253,7 +254,6 @@ let itemMoving = ref(false);
 const gridList = reactive([
         {
             "rowId": 1,
-            "rowOrder": 1,
             "rowItems": [{
                 "id": 20, "svgattr": "M49,0V50H0V0Z M100,0V50H51V0Z", "kolon": [
                     {"id": "r79ev3o", "width": 50},
@@ -263,7 +263,6 @@ const gridList = reactive([
         },
         {
             "rowId": 2,
-            "rowOrder": 2,
             "rowItems": [{
                 "id": 40,
                 "svgattr": "M23.5,0V50H0V0Z M49,0V50H25.5V0Z M74.5,0V50H51V0Z M100,0V50H76.5V0Z",
@@ -276,7 +275,6 @@ const gridList = reactive([
         },
         {
             "rowId": 3,
-            "rowOrder": 3,
             "rowItems": [{
                     "id": 30,
                     "svgattr": "M32, 0V50H0V0Z M66, 0V50H34V0Z M100, 0V50H68V0Z",
@@ -298,6 +296,12 @@ const gridList = reactive([
         }
     ]);
 
+const testList = reactive([
+    {'test':'test1'},
+    {'test':'test2'},
+    {'test':'test3'},
+    {'test':'test4'}
+    ])
 
 /*
 watch(
@@ -318,78 +322,11 @@ watch(
 
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    UIkit.util.on(rowSortSelector, 'start', function () {
-        rowMoving.value = true;
-    });
-
-    UIkit.util.on(rowSortSelector, 'moved', function (allItem,movedItem,movedItemElement) {
-        console.log('moved')
-
-        for (let i = 0; allItem.target.children.length > i; i++){
-            //allItem.target.children[i].setAttribute('roworder', i+1)
-
-            //console.log(gridList[i].rowOrder)
-            gridList[i].rowOrder = i+1;
-            //console.log(gridList[i].rowOrder)
-
-            /*let newItem = gridList[i];
-            gridList[i].rowOrder = i+1;
-            //console.log(i)
-            gridList.splice(i,1);
-            //console.log(gridList)
-            gridList.push(newItem);*/
-
-            //allItem.target.children[i].setAttribute('roworder', i+1);
-            //console.log("rowId = " + arr[i].rowId , "rowOrder = " + arr[i].rowOrder , "index = " +Number(i+1))
-        }
-
-        var nodes = Array.prototype.slice.call( movedItemElement.closest('#rowsort').children );
-        arraymove( movedItem.origin.index , nodes.indexOf(movedItemElement) );
-    });
-
-    UIkit.util.on(rowSortSelector, 'stop', function (allItem,movedItem,movedItemElement) {
-        console.log('stop')
-        rowMoving.value = false;
-
-
-        gridList.sort(compareIntegers);
-    });
-
     //if(rowSortStatus){}
-
-    if(itemSortStatus){
-        UIkit.util.on(itemSortSelector, 'moved', function (item) {
-            itemMoving.value = false;
-        });
-
-        UIkit.util.on(itemSortSelector, 'start', function () {
-            itemMoving.value = true;
-        });
-    }
-
-    toggleRowSortStatus(true);
-
-    setTimeout(function () {
-        arraymove(0, 1)
-    },1000)
-
-    /*setTimeout(function () {
-        arraymove(0, 1)
-    },2000)
-
-    setTimeout(function () {
-        arraymove(0, 1)
-    },3000)*/
+    //if(itemSortStatus){}
+    //toggleRowSortStatus(true);
 });
 
-
-/*function whichChild(elem){
-    //ERR!
-    var  i= 0;
-    while((elem=elem.previousSibling)!=null) ++i;
-    return i;
-}*/
 
 function toggleRowSortStatus(status){
     if(status) {
@@ -425,16 +362,15 @@ function findLastId() {
     return gridList.length+1;
 }
 
-function findLastOrder() {
+/*function findLastOrder() {
     if(!gridList.length) return 1;
     return gridList.length+1;
-}
+}*/
 
 function createRow(rowItems) {
     if(rowItems){
         let newItem = {
             "rowId": findLastId(),
-            "rowOrder": findLastOrder(),
             "rowItems": [rowItems],
         };
         gridList.push(newItem);
@@ -443,7 +379,6 @@ function createRow(rowItems) {
         // @todo: append new item to after current item next
         let newItem = {
             "rowId": findLastId(),
-            "rowOrder": findLastOrder(),
             "rowItems": [
                 {
                     "id":10,
@@ -475,7 +410,7 @@ function addRow(item) {
     changeRowStatus(false)
 }
 
-//Sort
+/*//Sort
 var compareIntegers = function(a,b){
     if(a.rowOrder<b.rowOrder){
         return -1;
@@ -484,43 +419,7 @@ var compareIntegers = function(a,b){
         return 1;
     }
     return 0
-}
-
-
-/*function arraymove(old_index, new_index) {
-
-    console.log(arr, old_index, new_index);
-
-    if (new_index >= arr.length) {
-        var k = new_index - arr.length + 1;
-        while (k--) {
-            arr.push(undefined);
-        }
-    }
-    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-
-    //return arr; // for testing
-};*/
-
-
-
-
-function arraymove(fromIndex, toIndex) {
-
-    console.log(fromIndex,toIndex);
-
-    var element = gridList[fromIndex];
-    gridList.splice(fromIndex, 1);
-    gridList.splice(toIndex, 0, element);
-
-    /*for(let i = 0; gridList.length > i; i++){
-        //console.log(arr[i].rowOrder);
-        gridList[i].rowOrder = i+1;
-        //console.log(arr[i].rowOrder);
-    }*/
-}
-
-
+}*/
 
 </script>
 
@@ -531,71 +430,86 @@ function arraymove(fromIndex, toIndex) {
     <button> Toggle Row Sort </button>
     <button> Toggle Item Sort </button>
     <button> Empty Everything </button>
-    -->
 
     <button @click="toggleRowSortStatus(!rowSortStatus)">toggle row sort status - {{ rowSortStatus }}</button>
     <button @click="toggleItemSortStatus(!itemSortStatus)">toggle item sort status - {{ itemSortStatus }}</button>
 
-
-    <!--<ul class="uk-subnav"  >
+    <ul class="uk-subnav"  >
         <li v-for="item in gridList">
-            Row Id = {{ item.rowId }} - Order = {{ item.rowOrder }} Item Count = {{ item.rowItems[0].kolon.length }} |
+            Row Id = {{ item.rowId }} - Item Count = {{ item.rowItems[0].kolon.length }} |
         </li>
-    </ul>-->
+    </ul>
+
+    -->
+
+
+
+    <!--<div class="uk-width-small uk-text-center">
+        Id = {{element.rowId}}
+        Kolon == {{ element.rowItems[0].kolon.length }}
+    </div>-->
 
 
     <div class="uk-flex-inline uk-flex-wrap uk-width-1-1">
         <section class="uk-flex-1 uk-section uk-padding-large uk-overflow-hidden">
             <div class="uk-container uk-container-expand ">
                 <div class="grid-area uk-text-center" id="rowsort">
+
+
                     <div class="uk-width-1-1" v-if="gridList.length == 0">
                         There is no any row.
                     </div>
-                    <div class="uk-grid uk-grid-small row-line clm" :rowId="item.rowId" :rowOrder="item.rowOrder" :class="rowMoving ? 'rowline' : ''" uk-grid v-else v-for="item in gridList">
-                        <div class="uk-width-1-1 column " @@mouseleave="mouseLeave(subItem,$event)" @@mouseenter="mouseenter(subItem,$event)" v-for="subItem in item.rowItems" v-if="item.rowItems">
-                            <div class="uk-position-top-center">
-                                <div class="edit-button uk-padding-small">
-                                    <ul class="uk-subnav uk-margin-remove">
-                                        <li @click="createRow()" class="uk-padding-remove"><span uk-icon="icon: plus; ratio:0.8" ></span></li>
-                                        <li class="moveClass"><span uk-icon="icon: move; ratio:0.8" ></span></li>
-                                        <li @click="removeRow(item)"><span uk-icon="icon: close; ratio:0.8" ></span></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="uk-grid uk-grid-small" uk-grid @mouseout="hovering(false)" id="item-sort" @mouseover="hovering(true)" >
-                                <div :class="`uk-width-1-${subItem.kolon.length} `" v-for="column in subItem.kolon" @mouseout="hovering(false)"  @mouseover="hovering(true)">
-                                    <div class="uk-padding-small inner-selection">
-                                        <div class="edit-button move-button uk-padding-small">
-                                            <ul class="uk-subnav uk-margin-remove">
-                                                <li class="itemMoveClass uk-padding-remove"><span uk-icon="icon: move; ratio:0.8" ></span></li>
-                                            </ul>
-                                        </div>
 
-                                        <div class="column-item uk-position-relative"  @mouseout="hovering(false)"  @mouseover="hovering(true)">
-                                            <div class="uk-position-center uk-text-center" @mouseout="hovering(false)" @mouseover="hovering(true)">
-                                                <span uk-icon="icon: plus-circle; ratio:1.5" @mouseout="hovering(false)" @mouseover="hovering(true)"></span>
-                                                <span> {{ item.rowOrder }} </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-1" v-else>
-                            There is no any row item.
-                        </div>
+                    <div v-else>
+                    <draggable
+                            :list="gridList"
+                            handle=".moveClass"
+                            group="rowGroup"
+                            @start="drag=true"
+                            @end="drag=false"
+                            item-key="id">
+                    <template #item="{element}">
+                        <div class="uk-grid uk-grid-small row-line clm" :class="rowMoving ? 'rowline' : ''" uk-grid  >
+                          <div class="uk-width-1-1 column " @@mouseleave="mouseLeave(subItem,$event)" @@mouseenter="mouseenter(subItem,$event)" v-for="subItem in element.rowItems" v-if="element.rowItems">
+                              <div class="uk-position-top-center">
+                                  <div class="edit-button uk-padding-small">
+                                      <ul class="uk-subnav uk-margin-remove">
+                                          <li @click="createRow()" class="uk-padding-remove"><span uk-icon="icon: plus; ratio:0.8" ></span></li>
+                                          <li class="moveClass"><span uk-icon="icon: move; ratio:0.8" ></span></li>
+                                          <li @click="removeRow(item)"><span uk-icon="icon: close; ratio:0.8" ></span></li>
+                                      </ul>
+                                  </div>
+                              </div>
+                              <div class="uk-grid uk-grid-small" uk-grid @mouseout="hovering(false)" id="item-sort" @mouseover="hovering(true)" >
+                                  <div :class="`uk-width-1-${subItem.kolon.length} `" v-for="column in subItem.kolon" @mouseout="hovering(false)"  @mouseover="hovering(true)">
+                                      <div class="uk-padding-small inner-selection">
+                                          <div class="edit-button move-button uk-padding-small">
+                                              <ul class="uk-subnav uk-margin-remove">
+                                                  <li class="itemMoveClass uk-padding-remove"><span uk-icon="icon: move; ratio:0.8" ></span></li>
+                                              </ul>
+                                          </div>
+
+                                          <div class="column-item uk-position-relative"  @mouseout="hovering(false)"  @mouseover="hovering(true)">
+                                              <div class="uk-position-center uk-text-center" @mouseout="hovering(false)" @mouseover="hovering(true)">
+                                                  <span uk-icon="icon: plus-circle; ratio:1.5" @mouseout="hovering(false)" @mouseover="hovering(true)"></span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div class="uk-width-1-1" v-else>
+                              There is no any row item.
+                          </div>
+                      </div>
+
+                    </template>
+                    </draggable>
                     </div>
-
                 </div>
             </div>
         </section>
-
-        <div class="uk-width-medium uk-hidden">
-            <!--<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, aliquam consequatur corporis cupiditate dicta distinctio doloribus eaque error explicabo laborum modi, mollitia nihil perspiciatis quas quo, ratione repudiandae voluptate voluptatum?</p>-->
-            <code>
-                {{ gridList }}
-            </code>
-        </div>
     </div>
 
 
