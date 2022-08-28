@@ -1,6 +1,5 @@
 <script setup>
-    import UIkit from 'uikit';
-    import {ref, reactive, watch, computed} from 'vue';
+    import {ref, reactive} from 'vue';
     import Draggable from "vuedraggable"
 
     //on load item data
@@ -486,7 +485,7 @@
             }],
         },
         {
-            "rowId": 1,
+            "rowId": 14,
             "rowItems":[{
                 "id": 34,
                 "svgattr": "M16,0V50H0V0Z M82,0V50H18V0Z M100,0V50H84V0Z",
@@ -508,38 +507,12 @@
         }
     ]);
 
-    function toggleRowSortStatus(status) {
-        if (status) {
-            rowSortStatus.value = true;
-            rowSort = UIkit.sortable(rowSortSelector, {
-                handle: '.moveClass',
-                //group: 'my-group'
-            });
-        } else {
-            rowSortStatus.value = false;
-            rowSort.$destroy();
-        }
-    }
-
-    function toggleItemSortStatus(status) {
-        if (status) {
-            itemSortStatus.value = true;
-            itemSort = UIkit.sortable(itemSortSelector, {
-                handle: '.itemMoveClass',
-                group: 'item-group'
-            });
-        } else {
-            itemSortStatus.value = false;
-            itemSort.$destroy();
-        }
-    }
-
     function hovering(status) {
         mouseHovering.value = status;
     }
 
     function findLastId() {
-        return gridList.length + 1;
+        return gridList[gridList.length-1].rowId + 1;
     }
 
     function createRow(rowItems) {
@@ -568,12 +541,9 @@
         }
     }
 
-    function removeRow(item) {
-        gridList.find(function (gridItem, gridIndex) {
-            if (gridItem.rowId == item.rowId) {
-                gridList.splice(gridIndex, 1);
-            }
-        })
+    function removeRow(index) {
+        console.log(findLastId());
+        gridList.splice(index, 1);
     }
 
     function changeRowStatus(status) {
@@ -602,39 +572,34 @@
                                 :list="gridList"
                                 handle=".moveClass"
                                 group="rowGroup"
-                                @start="drag=true"
-                                @end="endDraggable"
-                                item-key="id" #item="{element}" >
-                            <div class="uk-grid uk-grid-small row-line clm" :class="rowMoving ? 'rowline' : ''" uk-grid >
-                                <div class="uk-width-1-1 column " @@mouseleave="mouseLeave(subItem,$event)"
-                                     @@mouseenter="mouseenter(subItem,$event)" v-for="subItem in element.rowItems"
-                                     v-if="element.rowItems">
+                                item-key="id" #item="{element, index}" >
+                            <div class="uk-grid uk-grid-small" :class="rowMoving ? 'rowline' : ''" uk-grid >
+                                <div class="uk-width-1-1 column" v-for="subItem in element.rowItems">
                                     <div class="uk-position-top-center">
                                         <div class="edit-button uk-padding-small">
                                             <ul class="uk-subnav uk-margin-remove">
-                                                <li @click="createRow()" class="uk-padding-remove"><span
-                                                        uk-icon="icon: plus; ratio:0.8"></span></li>
+                                                <li @click="createRow(index)" class="uk-padding-remove"><span uk-icon="icon: plus; ratio:0.8"></span></li>
                                                 <li class="moveClass"><span uk-icon="icon: move; ratio:0.8"></span></li>
-                                                <li @click="removeRow(item)"><span
-                                                        uk-icon="icon: close; ratio:0.8"></span></li>
+                                                <li @click="removeRow(index)"><span uk-icon="icon: close; ratio:0.8"></span></li>
                                             </ul>
                                         </div>
                                     </div>
 
-                                    <draggable :set="parentElement = element"
+                                    <draggable
+                                                v-if="element.rowItems[0].kolon.length > 0"
+                                                :set="parentElement = element"
                                                :list="element.rowItems[0].kolon"
                                                handle=".itemMoveClass"
                                                group="itemGroup"
                                                class="uk-grid uk-grid-collapse"
                                                :class="
-                                               element.rowItems[0].id == '21' ||
+                                                element.rowItems[0].id == '21' ||
                                                 element.rowItems[0].id == '22' ||
                                                 element.rowItems[0].id == '31' ||
                                                 element.rowItems[0].id == '32' ||
                                                 element.rowItems[0].id == '33' ||
                                                 element.rowItems[0].id == '50' ||
                                                 element.rowItems[0].id == '34' ? 'uk-child-width-auto' : 'uk-child-width-expand' "
-                                               @end="endSubDraggable"
                                                item-key="id"
                                                #item="{element, index}" uk-grid  >
                                             <div :class="element.width == '33' ? 'uuk-flex-expand' : element.width == '66' ? 'uk-flex-1' : '' " :style="`width: ${element.width}%`" @@mouseout="hovering(false)"  @@mouseover="hovering(true)">
@@ -654,12 +619,17 @@
                                                 </div>
                                             </div>
                                     </draggable>
-
+                                    <!--@@mouseleave="mouseLeave(subItem,$event)"
+                                    @@mouseenter="mouseenter(subItem,$event)"-->
+                                    <div class="uk-width-1-1" v-else>
+                                        There is no any row item.
+                                        <div class="uk-margin-top">
+                                            <span uk-icon="icon: plus-circle; ratio:1.5" @mouseout="hovering(false)" @mouseover="hovering(true)"></span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="uk-width-1-1" v-else>
-                                    There is no any row item.
-                                </div>
+
                             </div>
                         </draggable>
                     </div>
