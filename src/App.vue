@@ -226,27 +226,17 @@
             ]
         }
     ];
-    const maxInnerRowGridItem = 6;
+    const gridList = reactive([]);
+
+    //const maxInnerRowGridItem = 6;
     const hoverClass = "selected-row";
 
     let addItemStatus = ref(false);
     let mouseHovering = ref(false);
 
-
-    let rowSort = null;
-    const rowSortSelector = '#rowsort';
-    //@todo default rowSortStatus = false
-    //const rowSortStatus = ref(false);
-    const rowSortStatus = ref(true);
     let rowMoving = ref(false);
 
-
-    let itemSort = null;
-    const itemSortSelector = '#item-sort';
-    const itemSortStatus = ref(false);
-    let itemMoving = ref(false);
-
-    //let addRowStatus = ref(false) ;
+    /*
 
     const gridList = reactive([
         {
@@ -506,43 +496,59 @@
             }]
         }
     ]);
+*/
+
+
 
     function hovering(status) {
         mouseHovering.value = status;
     }
 
     function findLastId() {
-        return gridList[gridList.length-1].rowId + 1;
+        if(gridList.length > 0){
+            let id = [];
+            for (let i = 0; gridList.length > i; i++){
+                id.push(gridList[i].rowId);
+            }
+            return Math.max(...id)+1
+        } else{
+            return 1;
+        }
     }
 
-    function createRow(rowItems) {
+
+
+    //create item
+
+    function createNewItem(addAfterIndex) {
+        //let newItem =
+    }
+
+    function addItem(rowItem) {
+        // @todo missed id
+        rowItem.rowItems[0].kolon.push(sectionData[0])
+    }
+
+
+    function createRow(rowItems,index) {
+        let newRow;
+
         if (rowItems) {
-            let newItem = {
+            newRow = {
                 "rowId": findLastId(),
                 "rowItems": [rowItems],
             };
-            gridList.push(newItem);
+            gridList.push(newRow);
         } else {
-
-            // @todo: append new item to after current item next
-            let newItem = {
+            newRow = {
                 "rowId": findLastId(),
-                "rowItems": [
-                    {
-                        "id": 10,
-                        "svgattr": "M100,0V50H0V0Z",
-                        "kolon": [
-                            {"id": "25yl85j", "width": 100}
-                        ]
-                    }
-                ],
+                "rowItems": [sectionData[0]],
             };
-            gridList.push(newItem);
+            gridList.splice((index+1), 0,newRow);
         }
     }
 
     function removeRow(index) {
-        console.log(findLastId());
         gridList.splice(index, 1);
     }
 
@@ -551,9 +557,11 @@
     }
 
     function addRow(item) {
-        createRow(item);
+        createRow(item,null );
         changeRowStatus(false)
     }
+
+
 
 </script>
 
@@ -562,7 +570,7 @@
     <div class="uk-flex-inline uk-flex-wrap uk-width-1-1">
         <section class="uk-flex-1 uk-section uk-padding-large uk-overflow-hidden">
             <div class="uk-container uk-container-expand ">
-                <div class="grid-area uk-text-center" id="rowsort">
+                <div class="grid-area uk-text-center">
                     <div class="uk-width-1-1" v-if="gridList.length == 0">
                         There is no any row.
                     </div>
@@ -578,7 +586,7 @@
                                     <div class="uk-position-top-center">
                                         <div class="edit-button uk-padding-small">
                                             <ul class="uk-subnav uk-margin-remove">
-                                                <li @click="createRow(index)" class="uk-padding-remove"><span uk-icon="icon: plus; ratio:0.8"></span></li>
+                                                <li @click="createRow(null,index)" class="uk-padding-remove"><span uk-icon="icon: plus; ratio:0.8"></span></li>
                                                 <li class="moveClass"><span uk-icon="icon: move; ratio:0.8"></span></li>
                                                 <li @click="removeRow(index)"><span uk-icon="icon: close; ratio:0.8"></span></li>
                                             </ul>
@@ -613,23 +621,18 @@
                                                     <div class="column-item uk-position-relative"  @mouseout="hovering(false)"  @mouseover="hovering(true)">
                                                         <div class="uk-position-center uk-text-center" @mouseout="hovering(false)" @mouseover="hovering(true)">
                                                             <span uk-icon="icon: plus-circle; ratio:1.5" @mouseout="hovering(false)" @mouseover="hovering(true)"></span>
-                                                            element.id : {{ element.id }}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                     </draggable>
-                                    <!--@@mouseleave="mouseLeave(subItem,$event)"
-                                    @@mouseenter="mouseenter(subItem,$event)"-->
                                     <div class="uk-width-1-1" v-else>
                                         There is no any row item.
                                         <div class="uk-margin-top">
-                                            <span uk-icon="icon: plus-circle; ratio:1.5" @mouseout="hovering(false)" @mouseover="hovering(true)"></span>
+                                            <span uk-icon="icon: plus-circle; ratio:1.5" @click="addItem(element,index)" ></span>
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
                         </draggable>
                     </div>
@@ -669,7 +672,7 @@
 
 <style lang="less">
 
-    @primary-color: aqua;
+    @primary-color: #00c0c0;
     @dashed-border-color: #747474;
 
     @import 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.13.7/css/uikit.min.css';
@@ -705,7 +708,7 @@
                 content: "";
                 width: 150vw;
                 height: 1px;
-                background-color: aqua;
+                background-color: @primary-color;
                 position: absolute;
                 left: -10vw;
             }
