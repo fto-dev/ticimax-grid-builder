@@ -232,7 +232,6 @@
     const hoverClass = "selected-row";
 
     let addItemStatus = ref(false);
-    let mouseHovering = ref(false);
 
     let rowMoving = ref(false);
 
@@ -499,11 +498,6 @@
 */
 
 
-
-    function hovering(status) {
-        mouseHovering.value = status;
-    }
-
     function findLastId() {
         if(gridList.length > 0){
             let id = [];
@@ -517,18 +511,10 @@
     }
 
 
-
-    //create item
-
-    function createNewItem(addAfterIndex) {
-        //let newItem =
-    }
-
     function addItem(rowItem) {
         // @todo missed id
         rowItem.rowItems[0].kolon.push(sectionData[0])
     }
-
 
     function createRow(rowItems,index) {
         let newRow;
@@ -560,9 +546,6 @@
         createRow(item,null );
         changeRowStatus(false)
     }
-
-
-
 </script>
 
 <template>
@@ -572,7 +555,7 @@
             <div class="uk-container uk-container-expand ">
                 <div class="grid-area uk-text-center">
                     <div class="uk-width-1-1" v-if="gridList.length == 0">
-                        There is no any row.
+                        Satır eklenmedi
                     </div>
 
                     <div v-else>
@@ -610,7 +593,7 @@
                                                 element.rowItems[0].id == '34' ? 'uk-child-width-auto' : 'uk-child-width-expand' "
                                                item-key="id"
                                                #item="{element, index}" uk-grid  >
-                                            <div :class="element.width == '33' ? 'uuk-flex-expand' : element.width == '66' ? 'uk-flex-1' : '' " :style="`width: ${element.width}%`" @@mouseout="hovering(false)"  @@mouseover="hovering(true)">
+                                            <div :class="element.width == '33' ? 'uuk-flex-expand' : element.width == '66' ? 'uk-flex-1' : '' " :style="`width: ${element.width}%`">
                                                 <div class="uk-padding-small inner-selection" >
                                                     <div class="edit-button move-button uk-padding-small">
                                                         <ul class="uk-subnav uk-margin-remove">
@@ -618,16 +601,16 @@
                                                         </ul>
                                                     </div>
 
-                                                    <div class="column-item uk-position-relative"  @mouseout="hovering(false)"  @mouseover="hovering(true)">
-                                                        <div class="uk-position-center uk-text-center" @mouseout="hovering(false)" @mouseover="hovering(true)">
-                                                            <span uk-icon="icon: plus-circle; ratio:1.5" @mouseout="hovering(false)" @mouseover="hovering(true)"></span>
+                                                    <div class="column-item uk-position-relative"  >
+                                                        <div class="uk-position-center uk-text-center" >
+                                                            <span uk-icon="icon: plus-circle; ratio:1.5" ></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                     </draggable>
                                     <div class="uk-width-1-1" v-else>
-                                        There is no any row item.
+                                        Kolon eklenmedi
                                         <div class="uk-margin-top">
                                             <span uk-icon="icon: plus-circle; ratio:1.5" @click="addItem(element,index)" ></span>
                                         </div>
